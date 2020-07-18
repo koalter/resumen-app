@@ -1,0 +1,7 @@
+.left {
+    text-align: left;
+}
+
+td, th {
+    text-align: right;
+}
