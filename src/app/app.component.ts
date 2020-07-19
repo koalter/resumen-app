@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from 'pdfmake/build/vfs_fonts';
 import { Articulo } from './Articulo';
+import { Descuento } from './Descuento';
 import { mock_articulos } from './mock';
 import { CONSTANTS } from './Constants';
 
@@ -20,9 +21,13 @@ export class AppComponent {
   subtotal: number;
   descuento: string;
   totalDescuento: number = 0;
-  listaDescuentos: number[] = [];
+  listaDescuentos: Descuento[] = [];
   precioFinal: number;
   entrega = NaN;
+  cliente: string;
+
+  private articulosId: number;
+  private descuentosId: number;
   
   get CONSTANTS() { return CONSTANTS }
 
@@ -30,22 +35,30 @@ export class AppComponent {
     this.sumar();
     pdfMake.vfs = pdfFonts.pdfMake.vfs;
     console.log(pdfMake);
+    this.articulosId = this.articulos.length;
+    this.descuentosId = this.listaDescuentos.length;
   }
 
   add() {
-    if (this.cantidad && this.precio) {
+    if (this.precio) {
+      let nombre = this.nombre ?? "Varios";
+      let cantidad = this.cantidad ? parseInt(this.cantidad) : 1;
+      let precio = parseFloat(this.precio) * cantidad; 
+
       let nuevoArticulo: Articulo = {
-        id: this.articulos.length - 1,
-        nombre: this.nombre ?? "Varios",
-        cantidad: parseInt(this.cantidad),
-        precio: parseFloat(this.precio)
+        id: this.articulosId,
+        nombre: nombre,
+        cantidad: cantidad,
+        precio: precio
       };
       console.log(nuevoArticulo);
       this.articulos.push(nuevoArticulo);
-      this.nombre = '';
-      this.cantidad = '';
-      this.precio = '';
+      this.nombre = undefined;
+      this.cantidad = undefined;
+      this.precio = undefined;
       this.sumar();
+
+      this.articulosId++;
     }
   }
 
@@ -65,16 +78,49 @@ export class AppComponent {
   }
 
   addDescuento() {
-    let descuento: number = parseFloat(this.descuento);
-    this.totalDescuento += descuento;
-    this.listaDescuentos.push(descuento*(-1))
-    this.descuento = '';
+    if (this.descuento && this.precioFinal > 0) {
+      let descuento: number = parseFloat(this.descuento);
+      this.totalDescuento += descuento;
+      
+      let element: Descuento = {
+        key: this.descuentosId,
+        value: descuento*(-1)
+      }
+      this.listaDescuentos.push(element)
+      this.descuento = undefined;
+  
+      this.calcularTotal();
 
-    this.calcularTotal();
+      this.descuentosId++;
+      console.log(this.listaDescuentos);
+    }
   }
 
   private calcularTotal() {
     this.precioFinal = this.subtotal - this.totalDescuento;
+  }
+
+  delete(array: any[], element: any) {
+    let index = array.indexOf(element);
+    array.splice(index, 1);
+    this.refresh();
+    console.log(`this.subtotal: ${this.subtotal} - this.totalDescuento: ${this.totalDescuento}`)
+  }
+
+  refresh() {
+    this.totalCantidad = 0;
+    this.subtotal = 0;
+    this.totalDescuento = 0;
+
+    this.articulos.forEach(a => {
+      this.subtotal += a.precio;
+      this.totalCantidad += a.cantidad;
+    });
+    this.listaDescuentos.forEach(d => {
+      this.totalDescuento += (d.value*(-1));
+    });
+
+    this.calcularTotal();
   }
 
   async exportar() {
@@ -82,18 +128,22 @@ export class AppComponent {
     const documentDefinition = {
       background: {
         image: await this.getBase64ImageFromURL('../assets/fondo.jpg'),
-        width: 368
+        width: 448
       },
       content: [
-        { text: CONSTANTS[0], fontSize: 18, bold: true },
+        { text: CONSTANTS[0], fontSize: 18, bold: true, margin: [0, 0, 0, 14] },
         {
           table: {
             headerRows: 1,
             body: this.buildTableBody()
           },
           layout: 'noBorders'
-        }
-      ]
+        },
+        { text: '¡Muchas gracias por su compra!', fontSize: 18, bold: true, margin: [0, 26, 0, 0] }
+      ],
+      defaultStyle: {
+        fontSize: 14
+      }
     };
     pdfMake.createPdf(documentDefinition).open();
     // pdfMake.createPdf(documentDefinition).download('helloworld.pdf');
@@ -118,7 +168,7 @@ export class AppComponent {
       ]);
     });
 
-    table.push([{ text: '', colSpan: 3, margin: [0, 0, 0, 16] }]);
+    table.push([{ text: '', colSpan: 3, margin: [0, 0, 0, 24] }]);
 
     if (this.totalCantidad > 0 && this.subtotal > 0) {
       subtotal = [
@@ -129,21 +179,31 @@ export class AppComponent {
       table.push(subtotal);
     }
 
-    table.push([{ text: CONSTANTS[4], alignment: 'right' }, {}, {}]);
-    
-    this.listaDescuentos.forEach(des => {
-      table.push([{ text: des.toString(), colSpan: 3, alignment: 'right' }, {}, {}]);
-    });
+    if (this.listaDescuentos.length > 0) {
+      table.push([{ text: CONSTANTS[4], alignment: 'right' }, {}, {}]);
+      this.listaDescuentos.forEach(des => {
+        table.push([{ text: des.value.toString(), colSpan: 3, alignment: 'right' }, {}, {}]);
+      });
+    }
 
+    // total
     table.push([
       { text: CONSTANTS[5], alignment: 'right', bold: true }, 
       { text: '$ '+this.precioFinal.toString(), colSpan: 2, alignment: 'right', bold: true }
     ]);
 
+    // punto de entrega
     table.push([
-      { text: CONSTANTS[6], margin: [0, 24, 0, 0], alignment: 'right' }, 
-      { text: CONSTANTS[this.entrega], alignment: 'right', colSpan: 2, margin: [24, 24, 0, 0] }
+      { text: CONSTANTS[6], margin: [0, 20, 0, 0], alignment: 'right' }, 
+      { text: CONSTANTS[this.entrega], alignment: 'right', colSpan: 2, margin: [24, 20, 0, 0] }
     ]);
+
+    // cliente
+    table.push([
+      { text: CONSTANTS[9], margin: [0, 18, 0, 0], alignment: 'right' }, 
+      { text: this.cliente, colSpan: 2, margin: [24, 18, 0, 0] }
+    ]);
+
     return table;
   }
 

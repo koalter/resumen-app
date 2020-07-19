@@ -10,6 +10,9 @@
       <td class="left">{{ articulo.nombre }}</td>
       <td>{{ articulo.cantidad }}u.</td>
       <td>$ {{ articulo.precio }}</td>
+      <td>
+        <button (click)="delete(articulos, articulo)">-</button>
+      </td>
     </tr>
     <tr>
       <td class="left">
@@ -19,7 +22,7 @@
         <input type="number" [(ngModel)]="cantidad" placeholder="Cantidad" min="1">
       </td>
       <td>
-        <input type="number" [(ngModel)]="precio" placeholder="Precio" min="1">
+        <input type="number" [(ngModel)]="precio" placeholder="Precio unitario" min="1">
       </td>
       <td>
         <button (click)="add()">+</button>
@@ -42,7 +45,10 @@
       </td>
     </tr>
     <tr *ngFor="let d of listaDescuentos">
-      <td colspan="3">{{ d }}</td>
+      <td colspan="3">{{ d.value }}</td>
+      <td>
+        <button (click)="delete(listaDescuentos, d)">-</button>
+      </td>
     </tr>
   </tbody>
   <tfoot>
@@ -51,9 +57,13 @@
   </tfoot>
 </table>
 
-<div>
+<div id="entrega">
   <label for="entrega">{{ CONSTANTS[6] }}</label>
   <input type="radio" [value]="7" name="entrega" [(ngModel)]="entrega">{{ CONSTANTS[7] }}
   <input type="radio" [value]="8" name="entrega" [(ngModel)]="entrega">{{ CONSTANTS[8] }}
   <button (click)="exportar()">Generar boleta</button>
+</div>
+<div id="cliente">
+  <label for="cliente">{{ CONSTANTS[9] }}</label>
+  <input type="text" [(ngModel)]="cliente">
 </div>
