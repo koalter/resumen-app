@@ -78,21 +78,24 @@ export class AppComponent {
   }
 
   addDescuento() {
-    if (this.descuento && this.precioFinal > 0) {
+    if (this.descuento) {
       let descuento: number = parseFloat(this.descuento);
-      this.totalDescuento += descuento;
-      
-      let element: Descuento = {
-        key: this.descuentosId,
-        value: descuento*(-1)
-      }
-      this.listaDescuentos.push(element)
-      this.descuento = undefined;
-  
-      this.calcularTotal();
 
-      this.descuentosId++;
-      console.log(this.listaDescuentos);
+      if (this.precioFinal - descuento > 0) {
+        this.totalDescuento += descuento;
+        
+        let element: Descuento = {
+          key: this.descuentosId,
+          value: descuento*(-1)
+        }
+        this.listaDescuentos.push(element)
+        this.descuento = undefined;
+    
+        this.calcularTotal();
+  
+        this.descuentosId++;
+        console.log(this.listaDescuentos);
+      }
     }
   }
 
