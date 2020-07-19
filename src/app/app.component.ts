@@ -3,7 +3,6 @@ import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from 'pdfmake/build/vfs_fonts';
 import { Articulo } from './Articulo';
 import { Descuento } from './Descuento';
-import { mock_articulos } from './mock';
 import { CONSTANTS } from './Constants';
 
 @Component({
@@ -13,7 +12,7 @@ import { CONSTANTS } from './Constants';
 })
 export class AppComponent {
   title = 'resumen-app';
-  articulos: Articulo[] = mock_articulos.slice();
+  articulos: Articulo[] = [];
   nombre: string;
   cantidad: string;
   precio: string;
@@ -34,7 +33,6 @@ export class AppComponent {
   ngOnInit() {
     this.sumar();
     pdfMake.vfs = pdfFonts.pdfMake.vfs;
-    console.log(pdfMake);
     this.articulosId = this.articulos.length;
     this.descuentosId = this.listaDescuentos.length;
   }
@@ -51,7 +49,7 @@ export class AppComponent {
         cantidad: cantidad,
         precio: precio
       };
-      console.log(nuevoArticulo);
+
       this.articulos.push(nuevoArticulo);
       this.nombre = undefined;
       this.cantidad = undefined;
@@ -94,7 +92,6 @@ export class AppComponent {
         this.calcularTotal();
   
         this.descuentosId++;
-        console.log(this.listaDescuentos);
       }
     }
   }
@@ -107,7 +104,6 @@ export class AppComponent {
     let index = array.indexOf(element);
     array.splice(index, 1);
     this.refresh();
-    console.log(`this.subtotal: ${this.subtotal} - this.totalDescuento: ${this.totalDescuento}`)
   }
 
   refresh() {
@@ -127,7 +123,6 @@ export class AppComponent {
   }
 
   async exportar() {
-    console.log(this.entrega);
     const documentDefinition = {
       background: {
         image: await this.getBase64ImageFromURL('../assets/fondo.jpg'),
@@ -148,8 +143,7 @@ export class AppComponent {
         fontSize: 14
       }
     };
-    pdfMake.createPdf(documentDefinition).open();
-    // pdfMake.createPdf(documentDefinition).download('helloworld.pdf');
+    pdfMake.createPdf(documentDefinition).open({}, window);
   }
 
   private buildTableBody(): object[] {
@@ -210,7 +204,7 @@ export class AppComponent {
     return table;
   }
 
-  getBase64ImageFromURL(url) {
+  private getBase64ImageFromURL(url) {
     return new Promise((resolve, reject) => {
       var img = new Image();
       img.setAttribute("crossOrigin", "anonymous");

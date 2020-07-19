@@ -61,9 +61,9 @@
   <label for="entrega">{{ CONSTANTS[6] }}</label>
   <input type="radio" [value]="7" name="entrega" [(ngModel)]="entrega">{{ CONSTANTS[7] }}
   <input type="radio" [value]="8" name="entrega" [(ngModel)]="entrega">{{ CONSTANTS[8] }}
-  <button (click)="exportar()">Generar boleta</button>
 </div>
 <div id="cliente">
   <label for="cliente">{{ CONSTANTS[9] }}</label>
   <input type="text" [(ngModel)]="cliente">
 </div>
+<button (click)="exportar()">Generar boleta</button>
