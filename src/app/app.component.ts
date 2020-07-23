@@ -131,8 +131,12 @@ export class AppComponent {
         fontSize: 14
       }
     };
-    pdfMake.createPdf(documentDefinition).open();
-    // pdfMake.createPdf(documentDefinition).download('helloworld.pdf');
+    
+    if (environment.production) {
+      pdfMake.createPdf(documentDefinition).open({}, window);
+    } else {
+      pdfMake.createPdf(documentDefinition).open();
+    }
   }
 
   private buildTableBody(): object[] {
@@ -186,7 +190,7 @@ export class AppComponent {
 
     // cliente
     table.push([
-      { text: CONSTANTS[9], margin: [0, 18, 0, 0], alignment: 'right' }, 
+      { text: CONSTANTS[7], margin: [0, 18, 0, 0], alignment: 'right' }, 
       { text: this.cliente, colSpan: 2, margin: [24, 18, 0, 0] }
     ]);
 
