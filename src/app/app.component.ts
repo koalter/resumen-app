@@ -3,8 +3,9 @@ import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from 'pdfmake/build/vfs_fonts';
 import { Articulo } from './Articulo';
 import { Descuento } from './Descuento';
-import { mock_articulos } from './mock';
+import { mockRepository } from './mock';
 import { CONSTANTS } from './Constants';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -13,28 +14,32 @@ import { CONSTANTS } from './Constants';
 })
 export class AppComponent {
   title = 'resumen-app';
-  articulos: Articulo[] = mock_articulos.slice();
+  articulos: Articulo[] = !(environment.production) ? mockRepository.articulos.slice() : [];
+  listaDescuentos: Descuento[] = !(environment.production) ? mockRepository.descuentos.slice() : [];
   nombre: string;
   cantidad: string;
   precio: string;
   totalCantidad: number;
   subtotal: number;
   descuento: string;
-  totalDescuento: number = 0;
-  listaDescuentos: Descuento[] = [];
-  precioFinal: number;
-  entrega = NaN;
   cliente: string;
+  entrega = NaN;
 
   private articulosId: number;
   private descuentosId: number;
   
   get CONSTANTS() { return CONSTANTS }
+  get precioFinal() { return this.subtotal - this.totalDescuento }
+  get zonasDeEntrega() { return !(environment.production) ? mockRepository.zonasDeEntrega.slice() : []}
+  get totalDescuento() { 
+    let sum = 0;
+    this.listaDescuentos.forEach(d => sum += d.value);
+    return sum;
+  }
 
   ngOnInit() {
-    this.sumar();
+    this.refresh();
     pdfMake.vfs = pdfFonts.pdfMake.vfs;
-    console.log(pdfMake);
     this.articulosId = this.articulos.length;
     this.descuentosId = this.listaDescuentos.length;
   }
@@ -51,82 +56,60 @@ export class AppComponent {
         cantidad: cantidad,
         precio: precio
       };
-      console.log(nuevoArticulo);
+
       this.articulos.push(nuevoArticulo);
       this.nombre = undefined;
       this.cantidad = undefined;
       this.precio = undefined;
-      this.sumar();
+      this.refresh();
 
       this.articulosId++;
     }
   }
-
-  private sumar() {
-    let totalCantidad: number = 0;
-    let subtotal: number = 0;
-
-    this.articulos.forEach(art => {
-      totalCantidad += art.cantidad;
-      subtotal += art.precio;
-    });
-
-    this.totalCantidad = totalCantidad;
-    this.subtotal = subtotal;
-    
-    this.calcularTotal();
-  }
-
+  
   addDescuento() {
     if (this.descuento) {
       let descuento: number = parseFloat(this.descuento);
 
-      if (this.precioFinal - descuento > 0) {
-        this.totalDescuento += descuento;
+      if (this.precioFinal - descuento >= 0) {
         
         let element: Descuento = {
           key: this.descuentosId,
-          value: descuento*(-1)
+          value: descuento
         }
         this.listaDescuentos.push(element)
         this.descuento = undefined;
-    
-        this.calcularTotal();
   
         this.descuentosId++;
-        console.log(this.listaDescuentos);
       }
     }
-  }
-
-  private calcularTotal() {
-    this.precioFinal = this.subtotal - this.totalDescuento;
   }
 
   delete(array: any[], element: any) {
     let index = array.indexOf(element);
     array.splice(index, 1);
     this.refresh();
-    console.log(`this.subtotal: ${this.subtotal} - this.totalDescuento: ${this.totalDescuento}`)
   }
 
   refresh() {
     this.totalCantidad = 0;
     this.subtotal = 0;
-    this.totalDescuento = 0;
 
     this.articulos.forEach(a => {
       this.subtotal += a.precio;
       this.totalCantidad += a.cantidad;
     });
-    this.listaDescuentos.forEach(d => {
-      this.totalDescuento += (d.value*(-1));
-    });
-
-    this.calcularTotal();
   }
 
-  async exportar() {
+  generarBoleta_click() {
+    if (this.precioFinal > 0) {
+      this.exportar();
+    } else {
+      alert(`No es posible generar una boleta por valor ${this.precioFinal}`);
+    }
+  }
+
+  private async exportar() {
     console.log(this.entrega);
     const documentDefinition = {
       background: {
@@ -198,7 +181,7 @@ export class AppComponent {
     // punto de entrega
     table.push([
       { text: CONSTANTS[6], margin: [0, 20, 0, 0], alignment: 'right' }, 
-      { text: CONSTANTS[this.entrega], alignment: 'right', colSpan: 2, margin: [24, 20, 0, 0] }
+      { text: this.zonasDeEntrega[this.entrega], alignment: 'right', colSpan: 2, margin: [24, 20, 0, 0] }
     ]);
 
     // cliente
@@ -210,7 +193,7 @@ export class AppComponent {
     return table;
   }
 
-  getBase64ImageFromURL(url) {
+  private getBase64ImageFromURL(url) {
     return new Promise((resolve, reject) => {
       var img = new Image();
       img.setAttribute("crossOrigin", "anonymous");

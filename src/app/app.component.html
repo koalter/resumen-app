@@ -45,7 +45,7 @@
       </td>
     </tr>
     <tr *ngFor="let d of listaDescuentos">
-      <td colspan="3">{{ d.value }}</td>
+      <td colspan="3">{{ (-1) * d.value }}</td>
       <td>
         <button (click)="delete(listaDescuentos, d)">-</button>
       </td>
@@ -56,14 +56,13 @@
     <td colspan="2">$ {{ precioFinal }}</td>
   </tfoot>
 </table>
-
+<span hidden>{{ subtotal }}</span><span hidden>{{ totalDescuento }}</span>
 <div id="entrega">
-  <label for="entrega">{{ CONSTANTS[6] }}</label>
-  <input type="radio" [value]="7" name="entrega" [(ngModel)]="entrega">{{ CONSTANTS[7] }}
-  <input type="radio" [value]="8" name="entrega" [(ngModel)]="entrega">{{ CONSTANTS[8] }}
-  <button (click)="exportar()">Generar boleta</button>
+  <h5>{{ CONSTANTS[6] }}</h5>
+  <label *ngFor="let zonas of zonasDeEntrega; index as i"><input type="radio" [value]="i" [(ngModel)]="entrega">{{ zonas }}</label>
 </div>
 <div id="cliente">
-  <label for="cliente">{{ CONSTANTS[9] }}</label>
+  <h5>{{ CONSTANTS[7] }}</h5>
   <input type="text" [(ngModel)]="cliente">
 </div>
+<button (click)="generarBoleta_click()">Generar boleta</button>
