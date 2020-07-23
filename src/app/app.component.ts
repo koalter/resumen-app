@@ -30,7 +30,7 @@ export class AppComponent {
   
   get CONSTANTS() { return CONSTANTS }
   get precioFinal() { return this.subtotal - this.totalDescuento }
-  get zonasDeEntrega() { return !(environment.production) ? mockRepository.zonasDeEntrega.slice() : []}
+  get zonasDeEntrega() { return mockRepository.zonasDeEntrega.slice() }
   get totalDescuento() { 
     let sum = 0;
     this.listaDescuentos.forEach(d => sum += d.value);
@@ -66,7 +66,7 @@ export class AppComponent {
       this.articulosId++;
     }
   }
-  
+
   addDescuento() {
     if (this.descuento) {
       let descuento: number = parseFloat(this.descuento);
