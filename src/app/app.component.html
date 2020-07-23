@@ -1,4 +1,4 @@
-<h1>{{ CONSTANTS[0] }}</h1>
+<h1>{{ CONSTANTS[0] }} (Basic)</h1>
 
 <table>
   <thead>
@@ -57,12 +57,4 @@
   </tfoot>
 </table>
 <span hidden>{{ subtotal }}</span><span hidden>{{ totalDescuento }}</span>
-<div id="entrega">
-  <h5>{{ CONSTANTS[6] }}</h5>
-  <label *ngFor="let zonas of zonasDeEntrega; index as i"><input type="radio" [value]="i" [(ngModel)]="entrega">{{ zonas }}</label>
-</div>
-<div id="cliente">
-  <h5>{{ CONSTANTS[7] }}</h5>
-  <input type="text" [(ngModel)]="cliente">
-</div>
 <button (click)="generarBoleta_click()">Generar boleta</button>

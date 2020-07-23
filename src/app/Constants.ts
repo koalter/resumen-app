@@ -4,7 +4,5 @@ export const CONSTANTS: string[] = [
     'precio', 
     'SUBTOTAL', 
     '% descuentos', 
-    'TOTAL', 
-    'Tu entrega es en: ',
-    'Se entrega a: '
+    'TOTAL'
 ];

@@ -13,7 +13,7 @@ import { environment } from 'src/environments/environment';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'resumen-app';
+  title = 'resumen-app-basic';
   articulos: Articulo[] = !(environment.production) ? mockRepository.articulos.slice() : [];
   listaDescuentos: Descuento[] = !(environment.production) ? mockRepository.descuentos.slice() : [];
   nombre: string;
@@ -110,13 +110,15 @@ export class AppComponent {
   }
 
   private async exportar() {
-    console.log(this.entrega);
+    const watermarkText = `remito generado con ${this.title}`;
+
     const documentDefinition = {
-      background: {
-        image: await this.getBase64ImageFromURL('../assets/fondo.jpg'),
-        width: 448
+      watermark: {
+        text: watermarkText,
+        opacity: 0.3
       },
       content: [
+        { text: watermarkText, fontSize: 10 },
         { text: CONSTANTS[0], fontSize: 18, bold: true, margin: [0, 0, 0, 14] },
         {
           table: {
@@ -125,7 +127,7 @@ export class AppComponent {
           },
           layout: 'noBorders'
         },
-        { text: '¡Muchas gracias por su compra!', fontSize: 18, bold: true, margin: [0, 26, 0, 0] }
+        { text: watermarkText, fontSize: 10, margin: [0, 26, 0, 0] }
       ],
       defaultStyle: {
         fontSize: 14
@@ -180,18 +182,6 @@ export class AppComponent {
     table.push([
       { text: CONSTANTS[5], alignment: 'right', bold: true }, 
       { text: '$ '+this.precioFinal.toString(), colSpan: 2, alignment: 'right', bold: true }
-    ]);
-
-    // punto de entrega
-    table.push([
-      { text: CONSTANTS[6], margin: [0, 20, 0, 0], alignment: 'right' }, 
-      { text: this.zonasDeEntrega[this.entrega], alignment: 'right', colSpan: 2, margin: [24, 20, 0, 0] }
-    ]);
-
-    // cliente
-    table.push([
-      { text: CONSTANTS[7], margin: [0, 18, 0, 0], alignment: 'right' }, 
-      { text: this.cliente, colSpan: 2, margin: [24, 18, 0, 0] }
     ]);
 
     return table;
