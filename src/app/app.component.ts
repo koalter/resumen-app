@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, enableProdMode } from '@angular/core';
 import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from 'pdfmake/build/vfs_fonts';
 import { Articulo } from './Articulo';
@@ -24,6 +24,7 @@ export class AppComponent {
   descuento: string;
   cliente: string;
   entrega = NaN;
+  otro: string;
 
   private articulosId: number;
   private descuentosId: number;
@@ -110,16 +111,16 @@ export class AppComponent {
   }
 
   private async exportar() {
-    console.log(this.entrega);
     const documentDefinition = {
       background: {
-        image: await this.getBase64ImageFromURL('../assets/fondo.jpg'),
-        width: 448
+        image: this.generarFondo(),
+        opacity: 0.5
       },
       content: [
-        { text: CONSTANTS[0], fontSize: 18, bold: true, margin: [0, 0, 0, 14] },
+        { text: CONSTANTS[0], fontSize: 18, bold: true, margin: [0, 0, 0, -5] },
         {
           table: {
+            widths: [250, 100, 100, 100],
             headerRows: 1,
             body: this.buildTableBody()
           },
@@ -152,9 +153,9 @@ export class AppComponent {
 
     this.articulos.forEach(art => {
       table.push([
-        { text: art.nombre }, 
-        { text: art.cantidad+'u.', alignment: 'right' }, 
-        { text: '$ '+art.precio, alignment: 'right' }
+        { text: art.nombre, margin: [0, 10, 0, 10] }, 
+        { text: art.cantidad+'u.', alignment: 'right', margin: [0, 10, 0, 10] }, 
+        { text: '$ '+art.precio, alignment: 'right', margin: [0, 10, 0, 10] }
       ]);
     });
 
@@ -162,17 +163,17 @@ export class AppComponent {
 
     if (this.totalCantidad > 0 && this.subtotal > 0) {
       subtotal = [
-        { text: CONSTANTS[3], alignment: 'right' }, 
-        { text: this.totalCantidad.toString()+'u.', alignment: 'right' }, 
-        { text: '$ '+this.subtotal.toString(), alignment: 'right' }
+        { text: CONSTANTS[3], alignment: 'right', margin: [0, 10, 0, 0], bold: true }, 
+        { text: this.totalCantidad.toString()+'u.', alignment: 'right', margin: [0, 10, 0, 0] }, 
+        { text: '$ '+this.subtotal.toString(), alignment: 'right', margin: [0, 10, 0, 0] }
       ];
       table.push(subtotal);
     }
 
     if (this.listaDescuentos.length > 0) {
-      table.push([{ text: CONSTANTS[4], alignment: 'right' }, {}, {}]);
+      table.push([{ text: CONSTANTS[4], alignment: 'right', italics: true }, {}, {}]);
       this.listaDescuentos.forEach(des => {
-        table.push([{ text: des.value.toString(), colSpan: 3, alignment: 'right' }, {}, {}]);
+        table.push([{ text: (des.value*(-1)).toString(), colSpan: 3, alignment: 'right', color: 'green' }, {}, {}]);
       });
     }
 
@@ -183,16 +184,21 @@ export class AppComponent {
     ]);
 
     // punto de entrega
-    table.push([
-      { text: CONSTANTS[6], margin: [0, 20, 0, 0], alignment: 'right' }, 
-      { text: this.zonasDeEntrega[this.entrega], alignment: 'right', colSpan: 2, margin: [24, 20, 0, 0] }
-    ]);
+    let puntoDeEntrega = this.entrega != -1 ? this.zonasDeEntrega[this.entrega] : this.otro;
+    if (puntoDeEntrega) {
+      table.push([
+        { text: CONSTANTS[6], margin: [0, 20, 0, 0], alignment: 'right' }, 
+        { text: puntoDeEntrega, colSpan: 2, margin: [24, 20, 0, 0] }
+      ]);
+    }
 
     // cliente
-    table.push([
-      { text: CONSTANTS[7], margin: [0, 18, 0, 0], alignment: 'right' }, 
-      { text: this.cliente, colSpan: 2, margin: [24, 18, 0, 0] }
-    ]);
+    if (this.cliente) {
+      table.push([
+        { text: CONSTANTS[7], margin: [0, 18, 0, 0], alignment: 'right' }, 
+        { text: this.cliente, colSpan: 2, margin: [24, 18, 0, 0] }
+      ]);
+    }
 
     return table;
   }
@@ -220,5 +226,32 @@ export class AppComponent {
 
       img.src = url;
     });
+  }
+
+  private generarFondo() {
+    let canvas = document.createElement('canvas');
+    let height: number = 860;
+    let width: number = 600;
+    let size: number = 15;
+
+    canvas.height = height;
+    canvas.width = width;
+    
+    let context = canvas.getContext('2d');
+
+    for (let y = 0;y <= height;y += size) {
+      context.moveTo(0, y);
+      context.lineTo(width, y);
+    }
+    for (let x = 0;x <= width;x += size) {
+      context.moveTo(x, 0);
+      context.lineTo(x, height);
+    }
+
+    context.strokeStyle = "cyan";
+    context.lineWidth = 0.5;
+    context.stroke();
+
+    return canvas.toDataURL('image/jpg');
   }
 }
