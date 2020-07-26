@@ -133,11 +133,9 @@ export class AppComponent {
       }
     };
     
-    if (environment.production) {
-      pdfMake.createPdf(documentDefinition).open({}, window);
-    } else {
-      pdfMake.createPdf(documentDefinition).open();
-    }
+    const pdf = pdfMake.createPdf(documentDefinition);
+    pdf.open();
+    pdf.download();
   }
 
   private buildTableBody(): object[] {
