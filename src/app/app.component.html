@@ -7,7 +7,7 @@
   </thead>
   <tbody>
     <tr *ngFor="let articulo of articulos">
-      <td class="left">{{ articulo.nombre }}</td>
+      <td class="left" style="width: 5em;">{{ articulo.nombre }}</td>
       <td>{{ articulo.cantidad }}u.</td>
       <td>$ {{ articulo.precio }}</td>
       <td>
@@ -60,6 +60,7 @@
 <div id="entrega">
   <h5>{{ CONSTANTS[6] }}</h5>
   <label *ngFor="let zonas of zonasDeEntrega; index as i"><input type="radio" [value]="i" [(ngModel)]="entrega">{{ zonas }}</label>
+  <label><input type="radio" [value]="-1" [(ngModel)]="entrega"><input type="text" placeholder="Otro" [(ngModel)]="otro"></label>
 </div>
 <div id="cliente">
   <h5>{{ CONSTANTS[7] }}</h5>

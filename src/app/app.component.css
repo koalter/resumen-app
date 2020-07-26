@@ -5,3 +5,7 @@
 td, th {
     text-align: right;
 }
+
+table {
+    table-layout: fixed;
+}
