@@ -180,7 +180,7 @@ export class AppComponent {
     // total
     table.push([
       { text: CONSTANTS[5], alignment: 'right', bold: true }, 
-      { text: '$ '+this.precioFinal.toString(), colSpan: 2, alignment: 'right', bold: true }
+      { text: '$ '+this.precioFinal.toFixed(2), colSpan: 2, alignment: 'right', bold: true }
     ]);
 
     // punto de entrega

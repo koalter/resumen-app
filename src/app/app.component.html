@@ -9,7 +9,7 @@
     <tr *ngFor="let articulo of articulos">
       <td class="left" style="width: 5em;">{{ articulo.nombre }}</td>
       <td>{{ articulo.cantidad }}u.</td>
-      <td>$ {{ articulo.precio }}</td>
+      <td>$ {{ articulo.precio.toFixed(2) }}</td>
       <td>
         <button (click)="delete(articulos, articulo)">-</button>
       </td>
@@ -31,7 +31,7 @@
     <tr *ngIf="totalCantidad > 0 && subtotal > 0">
       <td>{{ CONSTANTS[3] }}</td>
       <td>{{ totalCantidad }}u.</td>
-      <td>$ {{ subtotal }}</td>
+      <td>$ {{ subtotal.toFixed(2) }}</td>
     </tr>
     <tr>
       <td>
@@ -53,7 +53,7 @@
   </tbody>
   <tfoot>
     <td>{{ CONSTANTS[5] }}</td>
-    <td colspan="2">$ {{ precioFinal }}</td>
+    <td colspan="2">$ {{ precioFinal.toFixed(2) }}</td>
   </tfoot>
 </table>
 <span hidden>{{ subtotal }}</span><span hidden>{{ totalDescuento }}</span>
