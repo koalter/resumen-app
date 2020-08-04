@@ -22,7 +22,8 @@ export let mockRepository = {
     descuentos: [
         {
             key: 1,
-            value: 30.01
+            value: 30.01,
+            tipo: 1
         }
     ],
     zonasDeEntrega: [

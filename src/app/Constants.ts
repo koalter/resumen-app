@@ -6,5 +6,8 @@ export const CONSTANTS: string[] = [
     '% descuentos', 
     'TOTAL', 
     'Tu entrega es en: ',
-    'Se entrega a: '
+    'Se entrega a: ',
+    'Combo',
+    'Oferta',
+    'Promo'
 ];
