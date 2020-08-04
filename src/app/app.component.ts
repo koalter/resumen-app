@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from 'pdfmake/build/vfs_fonts';
 import { Articulo } from './Articulo';
-import { Descuento } from './Descuento';
+import { Descuento, TipoDescuento } from './Descuento';
 import { mockRepository } from './mock';
 import { CONSTANTS } from './Constants';
 import { environment } from 'src/environments/environment';
@@ -25,10 +25,12 @@ export class AppComponent {
   cliente: string;
   entrega = NaN;
   otro: string;
+  tipoDescuento: string;
 
   private articulosId: number;
   private descuentosId: number;
   
+  get TipoDescuento() { return TipoDescuento }
   get CONSTANTS() { return CONSTANTS }
   get precioFinal() { return this.subtotal - this.totalDescuento }
   get zonasDeEntrega() { return mockRepository.zonasDeEntrega.slice() }
@@ -43,6 +45,7 @@ export class AppComponent {
     pdfMake.vfs = pdfFonts.pdfMake.vfs;
     this.articulosId = this.articulos.length;
     this.descuentosId = this.listaDescuentos.length;
+    console.log(TipoDescuento['Combo']);
   }
 
   add() {
@@ -76,7 +79,8 @@ export class AppComponent {
         
         let element: Descuento = {
           key: this.descuentosId,
-          value: descuento
+          value: descuento,
+          tipo: TipoDescuento[this.tipoDescuento]
         }
         this.listaDescuentos.push(element)
         this.descuento = undefined;
@@ -173,7 +177,7 @@ export class AppComponent {
     if (this.listaDescuentos.length > 0) {
       table.push([{ text: CONSTANTS[4], alignment: 'right', italics: true }, {}, {}]);
       this.listaDescuentos.forEach(des => {
-        table.push([{ text: (des.value*(-1)).toString(), colSpan: 3, alignment: 'right', color: 'green' }, {}, {}]);
+        table.push([{}, { text: TipoDescuento[des.tipo], colspan: 2, alignment: 'right', color: 'green' }, { text: (des.value*(-1)).toString(), alignment: 'right', color: 'green' }]);
       });
     }
 
@@ -228,5 +232,9 @@ export class AppComponent {
     context.stroke();
 
     return canvas.toDataURL('image/jpg');
+  }
+
+  log(v: any) {
+    console.log(v);
   }
 }
