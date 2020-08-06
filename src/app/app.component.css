@@ -5,3 +5,8 @@
 td, th {
     text-align: right;
 }
+
+.color {
+    height: 2.5em;
+    width: 4em;
+}

@@ -3,4 +3,5 @@ export class Articulo {
     nombre: string;
     cantidad: number;
     precio: number;
+    color: string;
 }
