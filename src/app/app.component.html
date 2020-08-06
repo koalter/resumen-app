@@ -38,7 +38,6 @@
       <td (click)="cambio = !cambio">
         <button class="con cambio" *ngIf="cambio">Con cambio</button>
         <button class="sin cambio" *ngIf="!cambio">Sin Cambio</button>
-        <!-- <input type="checkbox" id="cambio" onchange="console.log(document.getElementById('cambio').checked)"> -->
       </td>
       <td>
         <button (click)="add()">+</button>
@@ -68,15 +67,15 @@
       </td>
     </tr>
     <tr *ngFor="let d of listaDescuentos">
-      <td colspan="3">{{ TipoDescuento[d.tipo] }}</td>
-      <td>{{ (-1) * d.value }}</td>
+      <td colspan="2">{{ TipoDescuento[d.tipo] }}</td>
+      <td colspan="2">{{ (-1) * d.value }}</td>
       <td>
         <button (click)="delete(listaDescuentos, d)">-</button>
       </td>
     </tr>
   </tbody>
   <tfoot>
-    <td colspan="2">{{ CONSTANTS[5] }}</td>
+    <td colspan="2"><b>{{ CONSTANTS[5] }}</b></td>
     <td colspan="2">$ {{ precioFinal.toFixed(2) }}</td>
   </tfoot>
 </table>
