@@ -251,8 +251,4 @@ export class AppComponent {
 
     return canvas.toDataURL('image/jpg');
   }
-
-  log(v: any) {
-    console.log(v);
-  }
 }
