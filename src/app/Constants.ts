@@ -9,5 +9,6 @@ export const CONSTANTS: string[] = [
     'Se entrega a: ',
     'Combo',
     'Oferta',
-    'Promo'
+    'Promo',
+    'tipo'
 ];
