@@ -1,7 +1,31 @@
+td, th {
+    text-align: right;
+}
+
+strong {
+    font-size: 0.8em;
+}
+
 .left {
     text-align: left;
 }
 
-td, th {
-    text-align: right;
+.cellNumber {
+    width: 7em;
+}
+
+.cambio {
+    width: 7em;
+}
+
+.sin {
+    background-color: #d00;
+}
+
+.con {
+    background-color: #0b0;
+}
+
+table * {
+    /* border: 1px solid black; */
 }

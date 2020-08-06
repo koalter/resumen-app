@@ -26,6 +26,8 @@ export class AppComponent {
   entrega = NaN;
   otro: string;
   tipoDescuento: string;
+  tipo: string;
+  cambio: boolean = false;
 
   private articulosId: number;
   private descuentosId: number;
@@ -58,7 +60,9 @@ export class AppComponent {
         id: this.articulosId,
         nombre: nombre,
         cantidad: cantidad,
-        precio: precio
+        precio: precio,
+        cambio: this.cambio,
+        tipo: this.tipo
       };
 
       this.articulos.push(nuevoArticulo);
