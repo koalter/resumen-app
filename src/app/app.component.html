@@ -7,7 +7,7 @@
     <th>{{ CONSTANTS[2] }}</th>
   </thead>
   <tbody>
-    <tr *ngFor="let articulo of articulos">
+    <tr *ngFor="let articulo of resumen.articulos">
       <td class="left" style="width: 5em;">{{ articulo.nombre }} <br>
         <strong *ngIf="articulo.cambio == false">*sin cambio</strong>
       </td>
@@ -15,25 +15,25 @@
       <td>{{ articulo.cantidad }}u.</td>
       <td>$ {{ articulo.precio.toFixed(2) }}</td>
       <td>
-        <button (click)="delete(articulos, articulo)">-</button>
+        <button (click)="delete(resumen.articulos, articulo)">-</button>
       </td>
     </tr>
     <tr>
       <td class="left">
-        <input type="text" [(ngModel)]="nombre" placeholder="Nombre del articulo">
+        <input type="text" [(ngModel)]="articuloActual.nombre" placeholder="Nombre del articulo">
       </td>
       <td>
-        <select [(ngModel)]="tipo">
+        <select [(ngModel)]="articuloActual.tipo">
           <option>{{ CONSTANTS[8] }}</option>
           <option>{{ CONSTANTS[9] }}</option>
           <option>{{ CONSTANTS[10] }}</option>
         </select>
       </td>
       <td>
-        <input class="cellNumber" type="number" [(ngModel)]="cantidad" placeholder="Cantidad" min="1">
+        <input class="cellNumber" type="number" [(ngModel)]="articuloActual.cantidad" placeholder="Cantidad" min="1">
       </td>
       <td>
-        <input class="cellNumber" type="number" [(ngModel)]="precio" placeholder="Precio unitario" min="1">
+        <input class="cellNumber" type="number" [(ngModel)]="articuloActual.precio" placeholder="Precio unitario" min="1">
       </td>
       <td (click)="cambio = !cambio">
         <button class="con cambio" *ngIf="cambio">Con cambio</button>
@@ -60,17 +60,17 @@
         </select>
       </td>
       <td colspan="2">
-        <input class="cellNumber" type="number" [(ngModel)]="descuento" min="0">
+        <input class="cellNumber" type="number" [(ngModel)]="descuentoActual.value" min="0">
       </td>
       <td>
         <button (click)="addDescuento()">+</button>
       </td>
     </tr>
-    <tr *ngFor="let d of listaDescuentos">
+    <tr *ngFor="let d of resumen.descuentos">
       <td colspan="2">{{ TipoDescuento[d.tipo] }}</td>
-      <td colspan="2">{{ (-1) * d.value }}</td>
+      <td colspan="2">{{ ((-1) * d.value).toFixed(2) }}</td>
       <td>
-        <button (click)="delete(listaDescuentos, d)">-</button>
+        <button (click)="delete(resumen.descuentos, d)">-</button>
       </td>
     </tr>
   </tbody>
