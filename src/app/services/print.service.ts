@@ -1,11 +1,7 @@
 import { Injectable } from '@angular/core';
 import pdfMake from 'pdfmake/build/pdfmake';
-import pdfFonts from 'pdfmake/build/vfs_fonts';
-import { CONSTANTS } from './Constants';
-import { Descuento, TipoDescuento } from './Descuento';
-import { Articulo } from './Articulo';
-import { Resumen } from './models/Resumen';
-import { Observable } from 'rxjs';
+import { CONSTANTS } from '../models/Constants';
+import { Resumen } from '../models/Resumen';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +10,7 @@ export class PrintService {
 
   constructor() { }
 
-  public exportar(resumen: Resumen): Observable<any> {
+  public exportar(resumen: Resumen): any {
     const documentDefinition = {
       background: {
         image: this.generarFondo(),
@@ -44,7 +40,7 @@ export class PrintService {
     let table: object[] = [];
     let thead = [
       {}, 
-      { text: CONSTANTS[11], alignment: 'right', bold: true },
+      { text: CONSTANTS[8], alignment: 'right', bold: true },
       { text: CONSTANTS[1], alignment: 'right', bold: true }, 
       { text: CONSTANTS[2], alignment: 'right', bold: true }
     ];
@@ -87,7 +83,7 @@ export class PrintService {
       resumen.descuentos.forEach(des => {
         table.push([
           {}, 
-          { text: TipoDescuento[des.tipo], colspan: 3, alignment: 'right', color: 'green' }, 
+          { text: des.tipo, colspan: 3, alignment: 'right', color: 'green' }, 
           {},
           { text: (des.value*(-1)).toString(), alignment: 'right', color: 'green' }]);
       });

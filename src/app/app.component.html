@@ -2,7 +2,7 @@
 
 <table>
   <thead>
-    <th colspan="2">{{ CONSTANTS[11] }}</th>
+    <th colspan="2">{{ CONSTANTS[8] }}</th>
     <th>{{ CONSTANTS[1] }}</th>
     <th>{{ CONSTANTS[2] }}</th>
   </thead>
@@ -15,7 +15,7 @@
       <td>{{ articulo.cantidad }}u.</td>
       <td>$ {{ articulo.precio.toFixed(2) }}</td>
       <td>
-        <button (click)="delete(resumen.articulos, articulo)">-</button>
+        <button (click)="btnEliminar_click(resumen.articulos, articulo)">-</button>
       </td>
     </tr>
     <tr>
@@ -24,9 +24,10 @@
       </td>
       <td>
         <select [(ngModel)]="articuloActual.tipo">
-          <option>{{ CONSTANTS[8] }}</option>
-          <option>{{ CONSTANTS[9] }}</option>
-          <option>{{ CONSTANTS[10] }}</option>
+          <option></option>
+          <option>{{ TipoDescuento[0] }}</option>
+          <option>{{ TipoDescuento[1] }}</option>
+          <option>{{ TipoDescuento[2] }}</option>
         </select>
       </td>
       <td>
@@ -35,52 +36,51 @@
       <td>
         <input class="cellNumber" type="number" [(ngModel)]="articuloActual.precio" placeholder="Precio unitario" min="1">
       </td>
-      <td (click)="cambio = !cambio">
-        <button class="con cambio" *ngIf="cambio">Con cambio</button>
-        <button class="sin cambio" *ngIf="!cambio">Sin Cambio</button>
+      <td (click)="articuloActual.cambio = !articuloActual.cambio">
+        <button class="con cambio" *ngIf="articuloActual.cambio">Con cambio</button>
+        <button class="sin cambio" *ngIf="!articuloActual.cambio">Sin Cambio</button>
       </td>
       <td>
-        <button (click)="add()">+</button>
+        <button (click)="btnAgregarArticulo_click()">+</button>
       </td>
     </tr>
-    <tr *ngIf="totalCantidad > 0 && subtotal > 0">
+    <tr *ngIf="this.resumen.getCantidadTotal() > 0 && this.resumen.getSubtotal() > 0">
       <td colspan="2">{{ CONSTANTS[3] }}</td>
-      <td>{{ totalCantidad }}u.</td>
-      <td>$ {{ subtotal.toFixed(2) }}</td>
+      <td>{{ this.resumen.getCantidadTotal() }}u.</td>
+      <td>$ {{ this.resumen.getSubtotal().toFixed(2) }}</td>
     </tr>
     <tr>
       <td>
         <i>{{ CONSTANTS[4] }}</i>
       </td>
       <td>
-        <select [(ngModel)]="tipoDescuento">
-          <option>{{ CONSTANTS[8] }}</option>
-          <option>{{ CONSTANTS[9] }}</option>
-          <option>{{ CONSTANTS[10] }}</option>
+        <select [(ngModel)]="descuentoActual.tipo">
+          <option></option>
+          <option>{{ TipoDescuento[0] }}</option>
+          <option>{{ TipoDescuento[1] }}</option>
+          <option>{{ TipoDescuento[2] }}</option>
         </select>
       </td>
       <td colspan="2">
         <input class="cellNumber" type="number" [(ngModel)]="descuentoActual.value" min="0">
       </td>
       <td>
-        <button (click)="addDescuento()">+</button>
+        <button (click)="btnAgregarDescuento_click()">+</button>
       </td>
     </tr>
     <tr *ngFor="let d of resumen.descuentos">
-      <td colspan="2">{{ TipoDescuento[d.tipo] }}</td>
+      <td colspan="2">{{ d.tipo }}</td>
       <td colspan="2">{{ ((-1) * d.value).toFixed(2) }}</td>
       <td>
-        <button (click)="delete(resumen.descuentos, d)">-</button>
+        <button (click)="btnEliminar_click(resumen.descuentos, d)">-</button>
       </td>
     </tr>
   </tbody>
   <tfoot>
     <td colspan="2"><b>{{ CONSTANTS[5] }}</b></td>
-    <td colspan="2">$ {{ precioFinal.toFixed(2) }}</td>
+    <td colspan="2">$ {{ this.resumen.getPrecioFinal().toFixed(2) }}</td>
   </tfoot>
 </table>
-
-<!-- <span hidden>{{ subtotal }}</span><span hidden>{{ totalDescuento }}</span> -->
 
 <div id="entrega">
   <h5>{{ CONSTANTS[6] }}</h5>
@@ -90,7 +90,7 @@
 
 <div id="cliente">
   <h5>{{ CONSTANTS[7] }}</h5>
-  <input type="text" [(ngModel)]="cliente">
+  <input type="text" [(ngModel)]="resumen.cliente">
 </div>
 
-<button (click)="generarBoleta_click()">Generar boleta</button>
+<button (click)="btnGenerarBoleta_click()">Generar boleta</button>

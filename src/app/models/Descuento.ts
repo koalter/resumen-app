@@ -1,7 +1,6 @@
 export class Descuento {
-    key: number;
     value: number;
-    tipo: number;
+    tipo: string;
 }
 
 export enum TipoDescuento {

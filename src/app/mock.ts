@@ -1,9 +1,8 @@
-import { TipoDescuento } from './Descuento';
+import { TipoDescuento } from './models/Descuento';
 
 export let mockRepository = {
     articulos: [
         {
-            id: 1,
             nombre: "Un articulo con descripcion moderada",
             cantidad: 100,
             precio: 12345,
@@ -11,7 +10,6 @@ export let mockRepository = {
             tipo: TipoDescuento[0]
         },
         {
-            id: 2,
             nombre: "Un articulo con una descripcion extremadamente larga, especifica, detallada y supercalifragilisticoespialidosa",
             cantidad: 10,
             precio: 10.00,
@@ -19,7 +17,6 @@ export let mockRepository = {
             tipo: TipoDescuento[1]
         },
         {
-            id: 3,
             nombre: "Un articulo simple",
             cantidad: 1,
             precio: 198.99,
@@ -29,9 +26,8 @@ export let mockRepository = {
     ],
     descuentos: [
         {
-            key: 1,
             value: 30.01,
-            tipo: 1
+            tipo: TipoDescuento[0]
         }
     ],
     zonasDeEntrega: [

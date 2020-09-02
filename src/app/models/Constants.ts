@@ -7,8 +7,5 @@ export const CONSTANTS: string[] = [
     'TOTAL', 
     'Tu entrega es en: ',
     'Se entrega a: ',
-    'Combo',
-    'Oferta',
-    'Promo',
     'tipo'
 ];

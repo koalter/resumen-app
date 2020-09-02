@@ -1,5 +1,5 @@
-import { Descuento } from '../Descuento';
-import { Articulo } from '../Articulo';
+import { Descuento } from './Descuento';
+import { Articulo } from './Articulo';
 
 export class Resumen {
     articulos: Articulo[];
